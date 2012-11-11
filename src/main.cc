@@ -7,6 +7,7 @@
 #include "player.h"
 #include "square.h"
 #include "util.h"
+#include "effects.h"
 
 using namespace std;
 
@@ -42,6 +43,9 @@ list<Square*> squares;
 // Sample "Gun" emitter (tied to player via game loop logic)
 Emitter *emitter = new Emitter();
 
+// Keep a copy of the effects manager
+EffectsManager *FX = new EffectsManager();
+
 
 /**
  * Performs logic and math calculations prior to rendering a frame.
@@ -76,6 +80,7 @@ void gameLoop() {
 		Square *square = (*square_it);
 		
 		if (square->isDead()) {
+      FX->add( new SquareExplosion(square) );
 			squares.erase(square_it);
 			square_it--;
 			delete square;
@@ -90,6 +95,9 @@ void gameLoop() {
 	emitter->setRotation( player->getRotation() );
 	emitter->setPosition( player->getX(), player->getY() );
 	emitter->update();
+	
+	// Manage global effects
+  FX->update();
 }
 
 
@@ -114,6 +122,9 @@ void render() {
 	
 	// Render the test emitter
 	emitter->render();
+  
+  // Render effects
+  FX->render();
   
   
   glFlush();

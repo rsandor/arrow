@@ -3,6 +3,7 @@
  */
 
 #include "entity.h"
+#include "effects.h"
 #pragma once
 
 class Square: public Entity {
@@ -21,3 +22,13 @@ class Square: public Entity {
 		// Just playing with this for now
 		int health;
 };
+
+class SquareExplosion: public Effect {
+  public: 
+    SquareExplosion(Square *square);
+    void render();
+  private:
+    double x;
+    double y;
+};
+

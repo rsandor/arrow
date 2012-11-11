@@ -1,4 +1,4 @@
-OBJECTS := main.o emitter.o entity.o player.o square.o
+OBJECTS := main.o emitter.o entity.o player.o square.o effects.o
 CFLAGS = -c
 LFLAGS = -framework GLUT -framework OpenGL -framework Cocoa
 OUTPUT = arrow

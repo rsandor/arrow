@@ -2,8 +2,13 @@
 #include <math.h>
 #include "GLUT/GLUT.h"
 #include "square.h"
+#include "effects.h"
 
 using namespace std;
+
+/*
+ * Square implementation
+ */
 
 Square::Square() {
 	wiggle = 0.0;
@@ -66,7 +71,7 @@ void Square::render() {
 	double red = (double)health / 100.0;
 	if (red < 0.0) red = 0.0;
 	
-	glColor3f(red, 0.0, 0.0);
+	glColor3f(0.5 + 0.5*red, 0.5*red, 0.0);
 	glBegin(GL_LINE_LOOP);
 		glVertex3f(-0.5, -0.5, 0.0);
 		glVertex3f(0.5, -0.5, 0.0);
@@ -76,3 +81,37 @@ void Square::render() {
 	
 	glPopMatrix();
 }
+
+
+/*
+ * Explosion effect implementation.
+ */
+SquareExplosion::SquareExplosion(Square *square) {
+  timer = duration = 600;
+  x = square->getX();
+  y = square->getY();
+}
+
+void SquareExplosion::render() {
+  double distance = 2.0*(duration-timer)/duration;
+  double color = timer / duration;
+  
+  glPushMatrix();
+  glTranslatef(x, y, 0.0);
+  
+  glPointSize(3.0);
+  glColor3f(0.75+0.25*color, 1.0-color, 0.0);
+  
+  glBegin(GL_POINTS);
+    for (int i = 0; i < 10; i++) {
+      double px = cos(i*M_PI/5) * distance;
+      double py = sin(i*M_PI/5) * distance;
+      glVertex3f(px, py, 0.0);
+    }
+  glEnd();
+  
+  glPopMatrix();
+}
+
+
+
