@@ -2,10 +2,13 @@
 #include <stdlib.h>
 #include <GLUT/glut.h>
 #include <math.h>
+#include <list>
 #include "emitter.h"
 #include "player.h"
 #include "square.h"
 #include "util.h"
+
+using namespace std;
 
 /**
  * Default screen size.
@@ -34,7 +37,7 @@ unsigned int keymap = 0;
 Player *player = new Player(); 
 
 // And example square
-Square *square = new Square();
+list<Square*> squares;
 
 // Sample "Gun" emitter (tied to player via game loop logic)
 Emitter *emitter = new Emitter();
@@ -68,15 +71,25 @@ void gameLoop() {
 	else
 		emitter->off();
 	
+	// Update the squares	
+	for (list<Square*>::iterator square_it = squares.begin(); square_it != squares.end(); square_it++) {
+		Square *square = (*square_it);
+		
+		if (square->isDead()) {
+			squares.erase(square_it);
+			square_it--;
+			delete square;
+		}
+		else {
+			square->update(player->getX(), player->getY());
+			emitter->checkHits(square);
+		}
+	}
+
 	// Sync the emitter with the player
 	emitter->setRotation( player->getRotation() );
 	emitter->setPosition( player->getX(), player->getY() );
 	emitter->update();
-	
-	emitter->checkHits(square);
-	
-	// Update the square
-	square->update(player->getX(), player->getY());
 }
 
 
@@ -94,9 +107,11 @@ void render() {
 	// Render the player
 	player->render();
   
-	// Render the example square
-	square->render();
-
+	// Render the squares
+	for (list<Square*>::iterator square_it = squares.begin(); square_it != squares.end(); square_it++) {
+		(*square_it)->render();
+	}
+	
 	// Render the test emitter
 	emitter->render();
   
@@ -281,7 +296,18 @@ int main(int argc, char **argv) {
 	emitter->setLifespan(2000);
 	emitter->setDelay(100);
 	
-	square->setPosition(10, 10);
+	
+	// Create a bunch of random squares
+	
+	for (int i = 0; i < 5; i++) {
+		double sx = 15.0-uniform() * 30.0;
+		double sy = 15.0-uniform() * 30.0;
+		Square *s = new Square();
+		s->setPosition(sx, sy);
+		squares.push_back(s);
+	}
+	
+	
 	
 	/*
 	emitter->setPosition(0, 0);

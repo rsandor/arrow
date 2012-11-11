@@ -11,6 +11,7 @@ class Square: public Entity {
 		void update(double, double);
 		void render();
 		bool checkHit(double, double);
+		bool isDead();
 		
 	private:
 		double d_wiggle;

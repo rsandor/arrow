@@ -14,13 +14,18 @@ Square::Square() {
 }
 
 bool Square::checkHit(double bx, double by) {
-	if (bx >= x - 0.5 && bx <= x + 0.5 && by >= y - 0.5 && y <= y + 0.5) {
-		health -= 2;
+	if (bx >= x - 0.5 && bx <= x + 0.5 && by >= y - 0.5 && by <= y + 0.5) {
+		health -= 5;
 		if (health <= 0) {
 			health = 0;
 		}
 		return true;
 	}
+	return false;
+}
+
+bool Square::isDead() {
+	return health <= 0;
 }
 
 void Square::update(double px, double py) {	
