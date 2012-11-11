@@ -4,6 +4,7 @@
 #include <math.h>
 #include "emitter.h"
 #include "player.h"
+#include "square.h"
 #include "util.h"
 
 /**
@@ -31,6 +32,9 @@ unsigned int keymap = 0;
 
 // The player entity
 Player *player = new Player(); 
+
+// And example square
+Square *square = new Square();
 
 // Sample "Gun" emitter (tied to player via game loop logic)
 Emitter *emitter = new Emitter();
@@ -68,6 +72,9 @@ void gameLoop() {
 	emitter->setRotation( player->getRotation() );
 	emitter->setPosition( player->getX(), player->getY() );
 	emitter->update();
+	
+	// Update the square
+	square->update(player->getX(), player->getY());
 }
 
 
@@ -85,6 +92,9 @@ void render() {
 	// Render the player
 	player->render();
   
+	// Render the example square
+	square->render();
+
 	// Render the test emitter
 	emitter->render();
   
@@ -268,6 +278,8 @@ int main(int argc, char **argv) {
 	emitter->setVelocity(0.01);
 	emitter->setLifespan(2000);
 	emitter->setDelay(100);
+	
+	square->setPosition(10, 10);
 	
 	/*
 	emitter->setPosition(0, 0);
