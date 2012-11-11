@@ -8,6 +8,7 @@
 #include <list>
 #include <math.h>
 #include <GLUT/glut.h>
+#include "square.h"
 
 /**
  * Particle structure.
@@ -53,6 +54,9 @@ class Emitter {
 
 		void update();
 		void render();
+		
+		// Ewww, need to find a good way to deal with this
+		void checkHits(Square *);
 
   protected:
 		void emit();

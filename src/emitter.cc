@@ -140,3 +140,16 @@ void Emitter::render() {
 	glEnd();
 }
 
+// This is awful, need a better way to do handle this
+void Emitter::checkHits(Square *square) {
+	for (list<Particle*>::iterator it = particles.begin(); it != particles.end(); it++) {
+		Particle *p = (*it);
+		if ( square->checkHit(p->getX(), p->getY()) ) {
+			particles.erase(it);
+			it--;
+			delete p;
+		}
+	}
+}
+
+

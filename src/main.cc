@@ -73,6 +73,8 @@ void gameLoop() {
 	emitter->setPosition( player->getX(), player->getY() );
 	emitter->update();
 	
+	emitter->checkHits(square);
+	
 	// Update the square
 	square->update(player->getX(), player->getY());
 }
