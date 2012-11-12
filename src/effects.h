@@ -5,23 +5,31 @@
 #include <list>
 #pragma once
 
+/**
+ * Abstract base class for all graphics effects for
+ * use with the effects manager.
+ */
 class Effect {
   public:
     Effect();
     Effect(int);
     void setDuration(int);
+    int getDuration();
+    int getTimer();
     void update();
     bool isDead();
     virtual void render() = 0;
     
-  protected:
+  private:
     int duration;
     int timer;
 };
 
+/**
+ * Manages, renders, and updates all game effects.
+ */
 class EffectsManager {
   public:
-    EffectsManager();
     void add(Effect *);
     void render();
     void update();
@@ -29,5 +37,4 @@ class EffectsManager {
     std::list<Effect*> effects;
 };
 
-void addEffect(Effect*);
-EffectsManager *getEffectsManager();
+extern EffectsManager *FX;

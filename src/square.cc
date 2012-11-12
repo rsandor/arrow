@@ -15,7 +15,7 @@ Square::Square() {
 	d_wiggle = 0.04;
 	max_wiggle = 15.0;
 	velocity = 0.0005;
-	health = 100;
+	health = 1000;
 }
 
 bool Square::checkHit(double bx, double by) {
@@ -87,12 +87,15 @@ void Square::render() {
  * Explosion effect implementation.
  */
 SquareExplosion::SquareExplosion(Square *square) {
-  timer = duration = 600;
+  setDuration(600);
   x = square->getX();
   y = square->getY();
 }
 
 void SquareExplosion::render() {
+  int duration = getDuration();
+  int timer = getTimer();
+  
   double distance = 2.0*(duration-timer)/duration;
   double color = timer / duration;
   

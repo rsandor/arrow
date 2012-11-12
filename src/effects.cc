@@ -1,3 +1,4 @@
+#include <iostream>
 #include "effects.h"
 
 using namespace std;
@@ -26,14 +27,13 @@ void Effect::setDuration(int d) {
   duration = timer = d;
 }
 
+int Effect::getDuration() { return duration; }
+int Effect::getTimer() { return timer; }
+
 
 /*
  * Effects Manager implementation.
  */
- 
-EffectsManager::EffectsManager() {
-}
- 
 void EffectsManager::add(Effect *effect) {
   effects.push_back(effect);
 }
@@ -56,12 +56,4 @@ void EffectsManager::update() {
   }
 }
 
-EffectsManager *man = new EffectsManager();
-
-EffectsManager *getEffectsManager() {
-  return man;
-}
-
-void addEffect(Effect *effect) {
-  man->add(effect);
-}
+EffectsManager *FX = new EffectsManager();

@@ -140,11 +140,13 @@ void Emitter::render() {
 	glEnd();
 }
 
+
 // This is awful, need a better way to do handle this
 void Emitter::checkHits(Square *square) {
 	for (list<Particle*>::iterator it = particles.begin(); it != particles.end(); it++) {
 		Particle *p = (*it);
 		if ( square->checkHit(p->getX(), p->getY()) ) {
+      FX->add( new ParticleHit(p->getX(), p->getY()) );
 			particles.erase(it);
 			it--;
 			delete p;
@@ -152,4 +154,29 @@ void Emitter::checkHits(Square *square) {
 	}
 }
 
+
+/**
+ * Particle hit effect.
+ */
+ParticleHit::ParticleHit(double startX, double startY) {
+  setDuration(500);
+  x = startX;
+  y = startY;
+}
+
+void ParticleHit::render() {
+  glPointSize(3.0);
+  
+  if (getTimer() % 2) {
+    glColor3f(1.0, 1.0, 0.0);
+  }
+  else {
+    glColor3f(1.0, 0.0, 0.0);
+  }
+  
+  
+  glBegin(GL_POINTS);
+  glVertex3f(x, y, 0.0);
+  glEnd();
+}
 

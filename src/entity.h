@@ -20,7 +20,7 @@ class Entity {
 		double getX();
 		double getY();
 		double getRotation();
-		double getVelocity();		
+		double getVelocity();
 
 	protected:
 		void normalizeRotation();

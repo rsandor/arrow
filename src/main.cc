@@ -43,9 +43,6 @@ list<Square*> squares;
 // Sample "Gun" emitter (tied to player via game loop logic)
 Emitter *emitter = new Emitter();
 
-// Keep a copy of the effects manager
-EffectsManager *FX = new EffectsManager();
-
 
 /**
  * Performs logic and math calculations prior to rendering a frame.
@@ -300,12 +297,26 @@ int main(int argc, char **argv) {
 
 	srand( (unsigned) time( NULL ) );
 	
-	emitter->setPosition(0, 0);
-	emitter->setRotation(45);
+	/*
 	emitter->setSpread(45);
 	emitter->setVelocity(0.01);
 	emitter->setLifespan(2000);
 	emitter->setDelay(100);
+	//*/
+	
+	//*
+	emitter->setSpread(20);
+	emitter->setVelocity(0.01);
+	emitter->setLifespan(2000);
+	emitter->setDelay(10);
+	//*/
+	
+	/*
+	emitter->setSpread(0);
+	emitter->setVelocity(0.02);
+	emitter->setLifespan(750);
+	emitter->setDelay(400);
+	//*/
 	
 	
 	// Create a bunch of random squares
@@ -320,14 +331,7 @@ int main(int argc, char **argv) {
 	
 	
 	
-	/*
-	emitter->setPosition(0, 0);
-	emitter->setRotation(45);
-	emitter->setSpread(20);
-	emitter->setVelocity(0.01);
-	emitter->setLifespan(2000);
-	emitter->setDelay(10);
-	*/
+	
 
   glutMainLoop();
   return 0;
