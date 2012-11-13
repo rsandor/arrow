@@ -14,12 +14,13 @@ Square::Square() {
 	wiggle = 0.0;
 	d_wiggle = 0.04;
 	max_wiggle = 15.0;
-	velocity = 0.0005;
+	velocity = 0.05;
 	health = 1000;
+  scale = 20.0;
 }
 
 bool Square::checkHit(double bx, double by) {
-	if (bx >= x - 0.5 && bx <= x + 0.5 && by >= y - 0.5 && by <= y + 0.5) {
+  if (bx >= x - (scale/2) && bx <= x + (scale/2) && by >= y - (scale/2) && by <= y + (scale/2)) {
 		health -= 5;
 		if (health <= 0) {
 			health = 0;
@@ -44,7 +45,7 @@ void Square::update(double px, double py) {
 	double diff = target_rotation - rotation;
 	
 	if (fabs(diff) > 0.1) {
-		addRotation( (diff < 0) ? -0.02 : 0.02 );
+		addRotation( (diff < 0) ? -1 : 1 );
 	}
 	
 	// Add the funny little wiggle walk
@@ -64,19 +65,22 @@ void Square::update(double px, double py) {
 void Square::render() {
 	glPushMatrix();
 	
+	
 	glTranslatef(x, y, 0.0);
   glRotatef(rotation, 0.0, 0.0, 1.0);
 	glRotatef(wiggle, 0.0, 0.0, 1.0);
+	glScalef(scale, scale, 1.0);
 
 	double red = (double)health / 100.0;
 	if (red < 0.0) red = 0.0;
 	
 	glColor3f(0.5 + 0.5*red, 0.5*red, 0.0);
-	glBegin(GL_LINE_LOOP);
+	glBegin(GL_POLYGON);
 		glVertex3f(-0.5, -0.5, 0.0);
 		glVertex3f(0.5, -0.5, 0.0);
 		glVertex3f(0.5, 0.5, 0.0);
 		glVertex3f(-0.5, 0.5, 0.0);
+		glVertex3f(-0.5, -0.5, 0.0);
 	glEnd();
 	
 	glPopMatrix();

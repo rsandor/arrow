@@ -2,29 +2,37 @@
  * Implements the player entity.
  */
 
-#include "player.h"
 #include <GLUT/GLUT.h>
+#include "player.h"
+#include "util.h"
+
 
 Player::Player() {
-	size = 1.0;
-	max_velocity = 0.005;
-	max_rotation = 0.1;
+	size = 20.0;
+	max_velocity = 0.25;
+	max_rotation = 0.4;
 }
 
 void Player::render() {
   glPushMatrix();
-  
-  glTranslatef(x, y, 0.0);
   glRotatef(rotation, 0.0, 0.0, 1.0);
   
-  glBegin(GL_LINE_LOOP);
-  {
+  glBegin(GL_POLYGON);
     glColor3f(0.25, 0.5, 1.0);
     glVertex3f(0.0, size, 0.0);
     glVertex3f(-(size/2), -(size/2), 0.0);
     glVertex3f(0.0, -(size/4), 0.0);
     glVertex3f((size/2), -(size/2), 0.0);
-  }
+    glVertex3f(0.0, size, 0.0);
+  glEnd();
+  
+  glLineWidth(5.0);
+  glBegin(GL_LINE_LOOP);
+    glColor3f(0.1, 0.2, 0.4);
+    glVertex3f(0.0, size, 0.0);
+    glVertex3f(-(size/2), -(size/2), 0.0);
+    glVertex3f(0.0, -(size/4), 0.0);
+    glVertex3f((size/2), -(size/2), 0.0);
   glEnd();
   
   glPopMatrix();

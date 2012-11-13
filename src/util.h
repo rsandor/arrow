@@ -16,3 +16,8 @@
 
 // Convert degrees to radians
 #define deg2rad(D) 	((M_PI * D) / 180.0 + M_PI_2);
+
+// Screen width and height
+extern int screen_width;
+extern int screen_height;
+

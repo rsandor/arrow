@@ -90,7 +90,7 @@ void gameLoop() {
 
 	// Sync the emitter with the player
 	emitter->setRotation( player->getRotation() );
-	emitter->setPosition( player->getX(), player->getY() );
+	emitter->setPosition( player->getX() + screen_width/2, player->getY() + screen_height/2 );
 	emitter->update();
 	
 	// Manage global effects
@@ -104,25 +104,60 @@ void gameLoop() {
 void render() {
   // Render the scene
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
-  glMatrixMode(GL_MODELVIEW); 
   
+  // Setup 2D rendering
+  glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
-  glTranslatef(0.0,0.0,-50); 
+  glOrtho(0, screen_width, 0, screen_height, -1, 1);
   
-	// Render the player
+  // Switch back to the modelview matrix
+  glMatrixMode(GL_MODELVIEW); 
+  glLoadIdentity();
+  
+  
+  // Center the camera on the player
+  glTranslatef(-player->getX(), -player->getY(), 0.0);
+  
+  
+  // Gridlines
+  
+  glLineWidth(1.0);
+  glColor3f(0.0, 0.1, 0.2);
+  
+  glBegin(GL_LINES);
+  
+  int step = screen_width / 40;
+  
+  
+  
+  for (int x = step; x < screen_width; x += step) {
+    glVertex3f(x, 0, -0.5);
+    glVertex3f(x, screen_height, -0.5);
+  }
+  for (int y = step; y < screen_height; y += step) {
+    glVertex3f(0, y, -0.5);
+    glVertex3f(screen_width, y, -0.5);
+  }
+  glEnd();
+  
+  // Render the player
+  glPushMatrix();
+  glLoadIdentity();
+  glTranslatef(screen_width/2, screen_height/2, 0.0);
+  
 	player->render();
+	
+  glPopMatrix();
   
 	// Render the squares
-	for (list<Square*>::iterator square_it = squares.begin(); square_it != squares.end(); square_it++) {
+	for (list<Square*>::iterator square_it = squares.begin(); square_it != squares.end(); square_it++)
 		(*square_it)->render();
-	}
 	
 	// Render the test emitter
 	emitter->render();
   
   // Render effects
   FX->render();
-  
   
   glFlush();
   glutSwapBuffers(); 
@@ -220,15 +255,7 @@ void resize(int width, int height) {
   screen_height=height;
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glViewport(0,0,screen_width,screen_height); 
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity(); 
-  gluPerspective(
-    45.0f,
-    (GLfloat)screen_width / (GLfloat)screen_height,
-    1.0f,
-    1000.0f
-  );
-  glutPostRedisplay (); 
+  glutPostRedisplay(); 
 }
 
 
@@ -238,6 +265,7 @@ void resize(int width, int height) {
 void display() {
   gameLoop();
   render();
+  usleep(1666);
 }
 
 
@@ -275,16 +303,9 @@ void initGL() {
   glClearColor(0.0, 0.0, 0.07, 0.0);
   glShadeModel(GL_SMOOTH); 
   glViewport(0, 0, screen_width, screen_height);
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
-  gluPerspective(
-    45.0f,
-    (GLfloat) screen_width / (GLfloat)screen_height,
-    1.0f,
-    1000.0f
-  );
   glEnable(GL_DEPTH_TEST);
-  glPolygonMode (GL_FRONT_AND_BACK, GL_LINE); 
+  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); 
+  glEnable(GL_LINE_SMOOTH);
 }
 
 
@@ -306,7 +327,7 @@ int main(int argc, char **argv) {
 	
 	//*
 	emitter->setSpread(20);
-	emitter->setVelocity(0.01);
+	emitter->setVelocity(0.5);
 	emitter->setLifespan(2000);
 	emitter->setDelay(10);
 	//*/
@@ -321,17 +342,16 @@ int main(int argc, char **argv) {
 	
 	// Create a bunch of random squares
 	
+	
 	for (int i = 0; i < 5; i++) {
-		double sx = 15.0-uniform() * 30.0;
-		double sy = 15.0-uniform() * 30.0;
+    double sx = screen_width * uniform();
+    double sy = screen_height * uniform();
 		Square *s = new Square();
 		s->setPosition(sx, sy);
 		squares.push_back(s);
 	}
-	
-	
-	
-	
+
+  //player->setPosition(screen_width/2, screen_height/2);
 
   glutMainLoop();
   return 0;

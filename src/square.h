@@ -18,7 +18,8 @@ class Square: public Entity {
 		double d_wiggle;
 		double wiggle;
 		double max_wiggle;
-		
+    double scale;
+    
 		// Just playing with this for now
 		int health;
 };
