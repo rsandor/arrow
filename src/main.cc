@@ -90,7 +90,7 @@ void gameLoop() {
 
 	// Sync the emitter with the player
 	emitter->setRotation( player->getRotation() );
-	emitter->setPosition( player->getX() + screen_width/2, player->getY() + screen_height/2 );
+	emitter->setPosition( player->getX(), player->getY() );
 	emitter->update();
 	
 	// Manage global effects
@@ -116,37 +116,65 @@ void render() {
   
   
   // Center the camera on the player
-  glTranslatef(-player->getX()+screen_width/2, -player->getY()+screen_height/2, 0.0);
-  
+  glTranslatef(
+    -player->getX()+screen_width/2,
+    -player->getY()+screen_height/2, 
+    0.0
+  );
   
   // Gridlines
   
-  glLineWidth(1.0);
-  glColor3f(0.0, 0.1, 0.2);
-  
-  glBegin(GL_LINES);
+  glPushMatrix();
+  glLoadIdentity();
   
   int step = screen_width / 40;
+  double ox = (int)player->getX() % step;
+  double oy = (int)player->getY() % step;
   
+  // Minor
+  glColor3f(0.0, 0.05, 0.1);
+  glLineWidth(1.0);
   
+  glBegin(GL_LINES);
+  for (int x = -(step + ox + step/2); x <= screen_width; x += step/2) {
+    glVertex3f(x, 0, -0.5);
+    glVertex3f(x, screen_height, -0.75);
+  }
   
-  for (int x = step; x < screen_width; x += step) {
+  for (int y = -(step + oy + step/2); y <= screen_height; y += step/2) {
+    glVertex3f(0, y, -0.5);
+    glVertex3f(screen_width, y, -0.75);
+  }
+  glEnd();
+  
+  // Major
+  glColor3f(0.0, 0.1, 0.2);
+  glLineWidth(1.0);
+  
+  glBegin(GL_LINES);
+  for (int x = -(step + ox); x <= screen_width; x += step) {
     glVertex3f(x, 0, -0.5);
     glVertex3f(x, screen_height, -0.5);
   }
-  for (int y = step; y < screen_height; y += step) {
+  
+  for (int y = -(step + oy); y <= screen_height; y += step) {
     glVertex3f(0, y, -0.5);
     glVertex3f(screen_width, y, -0.5);
   }
   glEnd();
   
+  
+  
+  glPopMatrix();
+  
+  
   // Render the player
   glPushMatrix();
   glLoadIdentity();
   glTranslatef(screen_width/2, screen_height/2, 0.0);
-  
-	player->render();
-	
+	  
+	  player->render();
+	  
   glPopMatrix();
   
 	// Render the squares
