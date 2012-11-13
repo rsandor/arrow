@@ -427,7 +427,7 @@ int main(int argc, char **argv) {
 	
 	emitter->setSpread(20);
 	emitter->setVelocity(5);
-	emitter->setLifespan(2000);
+	emitter->setLifespan(150);
 	emitter->setDelay(1);
 	
 	
