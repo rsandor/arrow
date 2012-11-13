@@ -116,7 +116,7 @@ void render() {
   
   
   // Center the camera on the player
-  glTranslatef(-player->getX(), -player->getY(), 0.0);
+  glTranslatef(-player->getX()+screen_width/2, -player->getY()+screen_height/2, 0.0);
   
   
   // Gridlines
