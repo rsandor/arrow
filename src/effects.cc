@@ -1,5 +1,6 @@
 #include <iostream>
 #include "effects.h"
+#include "GLUT/GLUT.h"
 
 using namespace std;
 
@@ -39,9 +40,14 @@ void EffectsManager::add(Effect *effect) {
 }
 
 void EffectsManager::render() {
+  glPushMatrix();
+  glTranslatef(0.0, 0.0, 0.5);
+  
   for (list<Effect *>::iterator it = effects.begin(); it != effects.end(); it++) {
     (*it)->render();
   }
+  
+  glPopMatrix();
 }
 
 void EffectsManager::update() {

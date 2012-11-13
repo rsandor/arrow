@@ -9,8 +9,8 @@
 
 Player::Player() {
 	size = 20.0;
-	max_velocity = 0.25;
-	max_rotation = 0.4;
+	max_velocity = 2.5;
+	max_rotation = 4.0;
 }
 
 void Player::render() {

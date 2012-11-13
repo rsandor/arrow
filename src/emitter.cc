@@ -164,7 +164,7 @@ int Emitter::size() {
  * Particle hit effect.
  */
 ParticleHit::ParticleHit(double startX, double startY) {
-  setDuration(500);
+  setDuration(40);
   x = startX;
   y = startY;
 }

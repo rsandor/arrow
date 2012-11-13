@@ -35,6 +35,32 @@ unsigned int keymap = 0;
 #define CHECK_KEY(key)  (keymap & (key))
 
 
+
+/**
+ * FPS shit.
+ */
+double fps = 0.0;
+int fps_frames;
+int fps_current_time;
+int fps_last_time;
+
+void calcFPS() {
+  fps_frames++;
+  fps_current_time = glutGet(GLUT_ELAPSED_TIME);
+  int elapsed = fps_current_time - fps_last_time;
+  
+  if (elapsed > 1000) {
+    fps = (double)fps_frames / ((double)elapsed / 1000.0);
+    fps_last_time = fps_current_time;
+    fps_frames = 0;
+  }
+}
+
+
+
+
+
+// Dev console switch
 bool showDevHUD = true;
 
 // The player entity
@@ -135,6 +161,10 @@ void renderDevHUD() {
   // Number of effects
   sprintf(buffer, "Effects:   %d", FX->size());
   renderString(buffer, 10, 60);
+  
+  // Frames Per Second
+  sprintf(buffer, "FPS        %.2f", fps);
+  renderString(buffer, 10, 80);
   
   glPopMatrix();
 }
@@ -341,7 +371,8 @@ void resize(int width, int height) {
 void display() {
   gameLoop();
   render();
-  usleep(1666);
+  calcFPS();
+  usleep(16666);
 }
 
 
@@ -394,31 +425,13 @@ int main(int argc, char **argv) {
 
 	srand( (unsigned) time( NULL ) );
 	
-	/*
-	emitter->setSpread(45);
-	emitter->setVelocity(0.01);
-	emitter->setLifespan(2000);
-	emitter->setDelay(100);
-	//*/
-	
-	//*
 	emitter->setSpread(20);
-	emitter->setVelocity(0.5);
+	emitter->setVelocity(5);
 	emitter->setLifespan(2000);
-	emitter->setDelay(10);
-	//*/
-	
-	/*
-	emitter->setSpread(0);
-	emitter->setVelocity(0.02);
-	emitter->setLifespan(750);
-	emitter->setDelay(400);
-	//*/
+	emitter->setDelay(1);
 	
 	
 	// Create a bunch of random squares
-	
-	
 	for (int i = 0; i < 5; i++) {
     double sx = screen_width * uniform();
     double sy = screen_height * uniform();
@@ -426,8 +439,6 @@ int main(int argc, char **argv) {
 		s->setPosition(sx, sy);
 		squares.push_back(s);
 	}
-
-  //player->setPosition(screen_width/2, screen_height/2);
 
   glutMainLoop();
   return 0;

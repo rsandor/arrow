@@ -14,8 +14,8 @@ Square::Square() {
 	wiggle = 0.0;
 	d_wiggle = 0.04;
 	max_wiggle = 15.0;
-	velocity = 0.05;
-	health = 1000;
+	velocity = 0.5;
+	health = 100;
   scale = 20.0;
 }
 
@@ -91,7 +91,7 @@ void Square::render() {
  * Explosion effect implementation.
  */
 SquareExplosion::SquareExplosion(Square *square) {
-  setDuration(600);
+  setDuration(60);
   x = square->getX();
   y = square->getY();
 }
@@ -100,7 +100,7 @@ void SquareExplosion::render() {
   int duration = getDuration();
   int timer = getTimer();
   
-  double distance = 2.0*(duration-timer)/duration;
+  double distance = 30.0*(duration-timer)/duration;
   double color = timer / duration;
   
   glPushMatrix();
