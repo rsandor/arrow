@@ -56,4 +56,8 @@ void EffectsManager::update() {
   }
 }
 
+int EffectsManager::size() {
+  return effects.size();
+}
+
 EffectsManager *FX = new EffectsManager();

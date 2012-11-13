@@ -33,6 +33,7 @@ class EffectsManager {
     void add(Effect *);
     void render();
     void update();
+    int size();
   private:
     std::list<Effect*> effects;
 };

@@ -155,6 +155,11 @@ void Emitter::checkHits(Square *square) {
 }
 
 
+int Emitter::size() {
+  return particles.size();
+}
+
+
 /**
  * Particle hit effect.
  */

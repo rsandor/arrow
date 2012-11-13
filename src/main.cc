@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <GLUT/glut.h>
 #include <math.h>
+#include <string.h>
 #include <list>
 #include "emitter.h"
 #include "player.h"
@@ -33,6 +34,8 @@ unsigned int keymap = 0;
 #define UNSET_KEY(key)  (keymap = keymap & (~(key)))
 #define CHECK_KEY(key)  (keymap & (key))
 
+
+bool showDevHUD = true;
 
 // The player entity
 Player *player = new Player(); 
@@ -95,6 +98,45 @@ void gameLoop() {
 	
 	// Manage global effects
   FX->update();
+}
+
+/**
+ * Renders information about player position, etc. to the screen as an overlay.
+ */
+ 
+void renderString(const char *str, int x, int y) {
+  glRasterPos2f(x, y);
+  for (int i = 0; i < strlen(str); i++) {
+    glutBitmapCharacter(GLUT_BITMAP_9_BY_15, str[i]);
+  }
+}
+ 
+void renderDevHUD() {
+  if (!showDevHUD) return;
+  
+  char buffer[256];
+  
+  glPushMatrix();
+  glLoadIdentity();
+  glColor3f(0.3, 1.0, 0.3);
+  
+  glScalef(1.0, -1.0, 1.0);
+  glTranslatef(0.0, -screen_height, 0.0);
+  
+  
+  // Coordinates
+  sprintf(buffer, "Position:  (%.2f, %.2f)", player->getX(), player->getY());
+  renderString(buffer, 10, 20);
+  
+  // Active Particles from the Gun Emitter
+  sprintf(buffer, "Particles: %d", emitter->size());
+  renderString(buffer, 10, 40);
+  
+  // Number of effects
+  sprintf(buffer, "Effects:   %d", FX->size());
+  renderString(buffer, 10, 60);
+  
+  glPopMatrix();
 }
 
 
@@ -187,6 +229,9 @@ void render() {
   // Render effects
   FX->render();
   
+  // Render the development HUD
+  renderDevHUD();
+  
   glFlush();
   glutSwapBuffers(); 
 }
@@ -219,6 +264,9 @@ void keyup(unsigned char key, int x, int y) {
     case 'd': UNSET_KEY(ACTION_RIGHT); break;
     case 'w': UNSET_KEY(ACTION_FORWARD); break;
     case 's': UNSET_KEY(ACTION_BACK); break;
+
+    // Toggle the development HUD
+    case '`': showDevHUD = !showDevHUD; break;
 
     // Quit the game
     case 'q': exit(0); break;

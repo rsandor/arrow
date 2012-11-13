@@ -70,6 +70,8 @@ public:
 	void update();
 	void render();
 	
+  int size();
+	
 	// Ewww, need to find a good way to deal with this
 	void checkHits(Square *);
 
