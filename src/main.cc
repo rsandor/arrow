@@ -9,71 +9,16 @@
 #include "square.h"
 #include "util.h"
 #include "effects.h"
+#include "controls.h"
 
 using namespace std;
 
-/**
- * Default screen size.
- */
 int screen_width = 800;
 int screen_height = 800;
-
-/**
- * Holds the current rendering layer
- */
 double _currentLayer;
-
-/**
- * Player action map
- */
-#define ACTION_LEFT      (1<<0)
-#define ACTION_RIGHT     (1<<1)
-#define ACTION_FORWARD   (1<<2)
-#define ACTION_BACK      (1<<3)
-#define ACTION_SHOOT     (1<<4)
-
 unsigned int keymap = 0;
-
-#define SET_KEY(key)    (keymap = keymap | (key))
-#define UNSET_KEY(key)  (keymap = keymap & (~(key)))
-#define CHECK_KEY(key)  (keymap & (key))
-
-
-
-/**
- * FPS shit.
- */
-double fps = 0.0;
-int fps_frames;
-int fps_current_time;
-int fps_last_time;
-
-void calcFPS() {
-  fps_frames++;
-  fps_current_time = glutGet(GLUT_ELAPSED_TIME);
-  int elapsed = fps_current_time - fps_last_time;
-  
-  if (elapsed > 1000) {
-    fps = (double)fps_frames / ((double)elapsed / 1000.0);
-    fps_last_time = fps_current_time;
-    fps_frames = 0;
-  }
-}
-
-
-
-
-
-// Dev console switch
-bool showDevHUD = true;
-
-// The player entity
 Player *player = new Player(); 
-
-// And example square
 list<Square*> squares;
-
-// Sample "Gun" emitter (tied to player via game loop logic)
 Emitter *emitter = new Emitter();
 
 
@@ -83,15 +28,15 @@ Emitter *emitter = new Emitter();
 void gameLoop() {
   
 	// Handle player direction
-  if ( CHECK_KEY(ACTION_LEFT) )
+  if ( checkAction(ACTION_LEFT) )
 		player->rotateLeft();
-  else if ( CHECK_KEY(ACTION_RIGHT) )
+  else if ( checkAction(ACTION_RIGHT) )
 		player->rotateRight();
   
 	// Handle Player Movement
-  if ( CHECK_KEY(ACTION_FORWARD) )
+  if ( checkAction(ACTION_FORWARD) )
 		player->moveForward();
-  else if ( CHECK_KEY(ACTION_BACK) )
+  else if ( checkAction(ACTION_BACK) )
 		player->moveBackward();
 	else
 		player->stop();
@@ -100,7 +45,7 @@ void gameLoop() {
 	player->update();
 
 	// Update the emitter
-	if ( CHECK_KEY(ACTION_SHOOT) )
+	if ( checkAction(ACTION_SHOOT) )
 		emitter->on();
 	else
 		emitter->off();
@@ -142,7 +87,7 @@ void renderString(const char *str, int x, int y) {
 }
  
 void renderDevHUD() {
-  if (!showDevHUD) return;
+  if (!checkAction(ACTION_SHOW_DEV_HUD)) return;
   
   char buffer[256];
   
@@ -167,7 +112,7 @@ void renderDevHUD() {
   renderString(buffer, 10, 60);
   
   // Frames Per Second
-  sprintf(buffer, "FPS        %.2f", fps);
+  sprintf(buffer, "FPS        %.2f", getFPS());
   renderString(buffer, 10, 80);
   
   glPopMatrix();
@@ -263,88 +208,6 @@ void render() {
 }
 
 
-/**
- * Handles GLUT keydown events.
- * @param key Character code for the key being pressed.
- * @param x X-coordinate of the mouse.
- * @param y Y-coordinate of the mouse.
- */
-void keydown(unsigned char key, int x, int y) {
-  switch (key) {
-    // Player Movement
-    case 'a': SET_KEY(ACTION_LEFT); break;
-    case 'd': SET_KEY(ACTION_RIGHT); break;
-    case 'w': SET_KEY(ACTION_FORWARD); break;
-    case 's': SET_KEY(ACTION_BACK); break;
-  }
-}
-
-
-/**
- * Handles GLUT keyup events.
- */
-void keyup(unsigned char key, int x, int y) {
-  switch (key) {
-    // Player Movement
-    case 'a': UNSET_KEY(ACTION_LEFT); break;
-    case 'd': UNSET_KEY(ACTION_RIGHT); break;
-    case 'w': UNSET_KEY(ACTION_FORWARD); break;
-    case 's': UNSET_KEY(ACTION_BACK); break;
-
-    // Toggle the development HUD
-    case '`': showDevHUD = !showDevHUD; break;
-
-    // Quit the game
-    case 'q': exit(0); break;
-  }
-}
-
-
-/**
- * Handles special keyboard events (function keys, arrows, etc.)
- * @param key Code for the key being pressed.
- * @param x X-coordinate of the mouse.
- * @param y Y-coordinate of the mouse.
- */
-void keyboard_s(int key, int x, int y) {
-  switch (key) {
-    case GLUT_KEY_UP:
-      break;
-    case GLUT_KEY_DOWN:
-      break;
-    case GLUT_KEY_LEFT:
-      break;
-    case GLUT_KEY_RIGHT:
-      break;
-  }
-}
-
-
-/**
- * Handles a mouse button press.
- * @param button Which button is being pressed.
- * @param state Which state (up, down) the button is in.
- * @param x X-coordinate of the mouse.
- * @param y Y-coordinate of the mosue.
- */
-void mouse_button(int button, int state, int x, int y) {
-	
-	if (button == GLUT_LEFT_BUTTON) {
-		(state == GLUT_DOWN) ? SET_KEY(ACTION_SHOOT) : UNSET_KEY(ACTION_SHOOT);
-	}
-	
-  return;
-}
-
-
-/**
- * Handles mouse movement when a button is being pressed (mouse drag).
- * @param x X-coordinate of the mouse.
- * @param y Y-coordinate of the mouse.
- */
-void mouse_move(int x, int y) {
-  return;
-}
 
 
 /**
@@ -435,6 +298,8 @@ int main(int argc, char **argv) {
 		s->setPosition(sx, sy);
 		squares.push_back(s);
 	}
+
+  toggleAction(ACTION_SHOW_DEV_HUD);
 
   glutMainLoop();
   return 0;

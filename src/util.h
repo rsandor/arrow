@@ -37,6 +37,8 @@ extern int screen_height;
 #define LAYER_PARTICLES   90.0
 #define LAYER_EFFECTS     90.1
 
-
-
 extern double _currentLayer;
+
+// FPS Calculation
+void calcFPS();
+double getFPS();
