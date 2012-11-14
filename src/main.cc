@@ -18,6 +18,10 @@ using namespace std;
 int screen_width = 800;
 int screen_height = 800;
 
+/**
+ * Holds the current rendering layer
+ */
+double _currentLayer;
 
 /**
  * Player action map
@@ -142,13 +146,13 @@ void renderDevHUD() {
   
   char buffer[256];
   
+  glDisable(GL_DEPTH_TEST);
   glPushMatrix();
   glLoadIdentity();
   glColor3f(0.3, 1.0, 0.3);
   
   glScalef(1.0, -1.0, 1.0);
   glTranslatef(0.0, -screen_height, 0.0);
-  
   
   // Coordinates
   sprintf(buffer, "Position:  (%.2f, %.2f)", player->getX(), player->getY());
@@ -167,7 +171,49 @@ void renderDevHUD() {
   renderString(buffer, 10, 80);
   
   glPopMatrix();
+  glEnable(GL_DEPTH_TEST);
 }
+
+void renderGrid() {
+  glPushMatrix();
+  glLoadIdentity();
+  
+  int step = screen_width / 40;
+  double ox = (int)player->getX() % step;
+  double oy = (int)player->getY() % step;
+  
+  // Minor
+  setLayer(LAYER_GRID_MINOR);
+  glColor3f(0.0, 0.05, 0.1);
+  glLineWidth(1.0);
+  glBegin(GL_LINES);
+  for (int x = -(step + ox + step/2); x <= screen_width; x += step/2) {
+    vertex(x, 0);
+    vertex(x, screen_height);
+  }
+  for (int y = -(step + oy + step/2); y <= screen_height; y += step/2) {
+    vertex(0, y);
+    vertex(screen_width, y);
+  }
+  glEnd();
+  
+  // Major
+  setLayer(LAYER_GRID_MAJOR);
+  glColor3f(0.0, 0.1, 0.2);
+  glBegin(GL_LINES);
+  for (int x = -(step + ox); x <= screen_width; x += step) {
+    vertex(x, 0);
+    vertex(x, screen_height);
+  }
+  for (int y = -(step + oy); y <= screen_height; y += step) {
+    vertex(0, y);
+    vertex(screen_width, y);
+  }
+  glEnd();
+  
+  glPopMatrix();
+}
+
 
 
 /**
@@ -180,7 +226,7 @@ void render() {
   // Setup 2D rendering
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
-  glOrtho(0, screen_width, 0, screen_height, -1, 1);
+  glOrtho(0, screen_width, 0, screen_height, -100, 100);
   
   // Switch back to the modelview matrix
   glMatrixMode(GL_MODELVIEW); 
@@ -195,59 +241,9 @@ void render() {
   );
   
   // Gridlines
+  renderGrid();
   
-  glPushMatrix();
-  glLoadIdentity();
-  
-  int step = screen_width / 40;
-  double ox = (int)player->getX() % step;
-  double oy = (int)player->getY() % step;
-  
-  // Minor
-  glColor3f(0.0, 0.05, 0.1);
-  glLineWidth(1.0);
-  
-  glBegin(GL_LINES);
-  for (int x = -(step + ox + step/2); x <= screen_width; x += step/2) {
-    glVertex3f(x, 0, -0.5);
-    glVertex3f(x, screen_height, -0.75);
-  }
-  
-  for (int y = -(step + oy + step/2); y <= screen_height; y += step/2) {
-    glVertex3f(0, y, -0.5);
-    glVertex3f(screen_width, y, -0.75);
-  }
-  glEnd();
-  
-  // Major
-  glColor3f(0.0, 0.1, 0.2);
-  glLineWidth(1.0);
-  
-  glBegin(GL_LINES);
-  for (int x = -(step + ox); x <= screen_width; x += step) {
-    glVertex3f(x, 0, -0.5);
-    glVertex3f(x, screen_height, -0.5);
-  }
-  
-  for (int y = -(step + oy); y <= screen_height; y += step) {
-    glVertex3f(0, y, -0.5);
-    glVertex3f(screen_width, y, -0.5);
-  }
-  glEnd();
-  
-  
-  
-  glPopMatrix();
-  
-  
-  // Render the player
-  glPushMatrix();
-  glLoadIdentity();
-  glTranslatef(screen_width/2, screen_height/2, 0.0);
-	  
-	  player->render();
-	  
-  glPopMatrix();
+  player->render();
   
 	// Render the squares
 	for (list<Square*>::iterator square_it = squares.begin(); square_it != squares.end(); square_it++)

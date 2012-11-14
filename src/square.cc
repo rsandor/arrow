@@ -3,6 +3,7 @@
 #include "GLUT/GLUT.h"
 #include "square.h"
 #include "effects.h"
+#include "util.h"
 
 using namespace std;
 
@@ -63,9 +64,7 @@ void Square::update(double px, double py) {
 }
 
 void Square::render() {
-	glPushMatrix();
-	
-	
+  glPushMatrix();
 	glTranslatef(x, y, 0.0);
   glRotatef(rotation, 0.0, 0.0, 1.0);
 	glRotatef(wiggle, 0.0, 0.0, 1.0);
@@ -74,13 +73,14 @@ void Square::render() {
 	double red = (double)health / 100.0;
 	if (red < 0.0) red = 0.0;
 	
+	setLayer(LAYER_ENEMIES);
 	glColor3f(0.5 + 0.5*red, 0.5*red, 0.0);
 	glBegin(GL_POLYGON);
-		glVertex3f(-0.5, -0.5, 0.0);
-		glVertex3f(0.5, -0.5, 0.0);
-		glVertex3f(0.5, 0.5, 0.0);
-		glVertex3f(-0.5, 0.5, 0.0);
-		glVertex3f(-0.5, -0.5, 0.0);
+		vertex(-0.5, -0.5);
+		vertex(0.5, -0.5);
+		vertex(0.5, 0.5);
+		vertex(-0.5, 0.5);
+		vertex(-0.5, -0.5);
 	glEnd();
 	
 	glPopMatrix();
@@ -109,11 +109,12 @@ void SquareExplosion::render() {
   glPointSize(3.0);
   glColor3f(0.75+0.25*color, 1.0-color, 0.0);
   
+  setLayer(LAYER_EFFECTS);
   glBegin(GL_POINTS);
     for (int i = 0; i < 10; i++) {
       double px = cos(i*M_PI/5) * distance;
       double py = sin(i*M_PI/5) * distance;
-      glVertex3f(px, py, 0.0);
+      vertex(px, py);
     }
   glEnd();
   

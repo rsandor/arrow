@@ -129,13 +129,13 @@ void Emitter::update() {
 void Emitter::render() {
 	glPointSize(2.8);
 	
+  setLayer(LAYER_PARTICLES);
 	glBegin(GL_POINTS);
 	for (list<Particle*>::iterator it = particles.begin(); it != particles.end(); it++) {
 		Particle *p = (*it);
-		double life_ratio = (double)p->getLife() / (double)lifespan;
-		
+		double life_ratio = (double)p->getLife() / (double)lifespan;		
 		glColor3f( 0.25 + 0.75*life_ratio, life_ratio, 0.0 );
-		glVertex3f( p->getX(), p->getY(), 0.0 );
+    vertex( p->getX(), p->getY() );
 	}
 	glEnd();
 }
@@ -179,9 +179,9 @@ void ParticleHit::render() {
     glColor3f(1.0, 0.0, 0.0);
   }
   
-  
+  setLayer(LAYER_EFFECTS);
   glBegin(GL_POINTS);
-  glVertex3f(x, y, 0.0);
+    vertex(x, y);
   glEnd();
 }
 
