@@ -1,9 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <GLUT/glut.h>
 #include <math.h>
 #include <string.h>
+#include <GLUT/glut.h>
 #include <list>
+
 #include "emitter.h"
 #include "player.h"
 #include "square.h"
@@ -12,6 +13,7 @@
 #include "controls.h"
 
 using namespace std;
+
 
 int screen_width = 800;
 int screen_height = 800;
@@ -235,10 +237,16 @@ void display() {
 }
 
 
+
+
+
 /**
- * Initializes GLUT
+ * Main method for the game. Initializes glut, gl, and starts the game loop.
  */
-void initGLUT(int argc, char **argv) {
+int main(int argc, char **argv) {
+  srand( (unsigned) time( NULL ) );
+  
+  // Initialize GLUT
   glutInit(&argc, argv);
   glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
   glutInitWindowSize(screen_width, screen_height);
@@ -255,34 +263,19 @@ void initGLUT(int argc, char **argv) {
   glutIdleFunc(display);
   glutReshapeFunc(resize);
   
-  
   glutMotionFunc(mouse_move);
   glutMouseFunc(mouse_button);
   glutSetCursor(GLUT_CURSOR_NONE);
-}
-
-
-/**
- * Initializes OpenGL for drawing.
- */
-void initGL() {
+  
+  // Initialize OpenGL
   glClearColor(0.0, 0.0, 0.07, 0.0);
   glShadeModel(GL_SMOOTH); 
   glViewport(0, 0, screen_width, screen_height);
   glEnable(GL_DEPTH_TEST);
   glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); 
   glEnable(GL_LINE_SMOOTH);
-}
 
-
-/**
- * Main method for the game. Initializes glut, gl, and starts the game loop.
- */
-int main(int argc, char **argv) {
-	initGLUT(argc, argv);
-  initGL();
-
-	srand( (unsigned) time( NULL ) );
+  
 	
 	emitter->setSpread(20);
 	emitter->setVelocity(5);
