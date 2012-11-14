@@ -24,18 +24,13 @@ list<Square*> squares;
 Emitter *emitter = new Emitter();
 
 
-/**
- * Performs logic and math calculations prior to rendering a frame.
- */
 void gameLoop() {
-  
-	// Handle player direction
-  if ( checkAction(ACTION_LEFT) )
+	// Update the player
+	if ( checkAction(ACTION_LEFT) )
 		player->rotateLeft();
   else if ( checkAction(ACTION_RIGHT) )
 		player->rotateRight();
   
-	// Handle Player Movement
   if ( checkAction(ACTION_FORWARD) )
 		player->moveForward();
   else if ( checkAction(ACTION_BACK) )
@@ -43,16 +38,10 @@ void gameLoop() {
 	else
 		player->stop();
   
-	// Update the player
 	player->update();
 
-	// Update the emitter
-	if ( checkAction(ACTION_SHOOT) )
-		emitter->on();
-	else
-		emitter->off();
 	
-	// Update the squares	
+	// Update the enemies
 	for (list<Square*>::iterator square_it = squares.begin(); square_it != squares.end(); square_it++) {
 		Square *square = (*square_it);
 		
@@ -68,18 +57,19 @@ void gameLoop() {
 		}
 	}
 
-	// Sync the emitter with the player
+  // Update the particles and effects
+  if ( checkAction(ACTION_SHOOT) )
+		emitter->on();
+	else
+		emitter->off();
+		
 	emitter->setRotation( player->getRotation() );
 	emitter->setPosition( player->getX(), player->getY() );
 	emitter->update();
 	
-	// Manage global effects
-  FX->update();
+	FX->update();
 }
 
-/**
- * Renders information about player position, etc. to the screen as an overlay.
- */
  
 void renderString(const char *str, int x, int y) {
   glRasterPos2f(x, y);
@@ -87,7 +77,8 @@ void renderString(const char *str, int x, int y) {
     glutBitmapCharacter(GLUT_BITMAP_9_BY_15, str[i]);
   }
 }
- 
+
+
 void renderDevHUD() {
   if (!checkAction(ACTION_SHOW_DEV_HUD)) return;
   
@@ -120,6 +111,7 @@ void renderDevHUD() {
   glPopMatrix();
   glEnable(GL_DEPTH_TEST);
 }
+
 
 void renderGrid() {
   glPushMatrix();
@@ -162,7 +154,6 @@ void renderGrid() {
 }
 
 
-
 /**
  * Renders the game graphics.
  */
@@ -179,37 +170,21 @@ void render() {
   glMatrixMode(GL_MODELVIEW); 
   glLoadIdentity();
   
-  
   // Center the camera on the player
-  glTranslatef(
-    -player->getX()+screen_width/2,
-    -player->getY()+screen_height/2, 
-    0.0
-  );
+  glTranslatef( -player->getX() + screen_width/2, -player->getY() + screen_height/2, 0.0 );
   
-  // Gridlines
+  // Render the game elements
   renderGrid();
-  
   player->render();
-  
-	// Render the squares
 	for (list<Square*>::iterator square_it = squares.begin(); square_it != squares.end(); square_it++)
 		(*square_it)->render();
-	
-	// Render the test emitter
 	emitter->render();
-  
-  // Render effects
   FX->render();
-  
-  // Render the development HUD
   renderDevHUD();
   
   glFlush();
   glutSwapBuffers(); 
 }
-
-
 
 
 /**
@@ -235,9 +210,6 @@ void display() {
   calcFPS();
   usleep(16666);
 }
-
-
-
 
 
 /**
@@ -276,14 +248,13 @@ int main(int argc, char **argv) {
   glEnable(GL_LINE_SMOOTH);
 
   
-	
+	// Initialize the game state
+	// TODO Pull this out into some form of game model
 	emitter->setSpread(20);
 	emitter->setVelocity(5);
 	emitter->setLifespan(150);
 	emitter->setDelay(1);
 	
-	
-	// Create a bunch of random squares
 	for (int i = 0; i < 5; i++) {
     double sx = screen_width * uniform();
     double sy = screen_height * uniform();
