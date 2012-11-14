@@ -175,13 +175,15 @@ void render() {
   
   // Render the game elements
   renderGrid();
-  player->render();
-	for (list<Square*>::iterator square_it = squares.begin(); square_it != squares.end(); square_it++)
-		(*square_it)->render();
-	emitter->render();
-  FX->render();
   renderDevHUD();
   
+  player->render();
+	emitter->render();
+  FX->render();
+  
+	for (list<Square*>::iterator square_it = squares.begin(); square_it != squares.end(); square_it++)
+		(*square_it)->render();
+	
   glFlush();
   glutSwapBuffers(); 
 }
@@ -194,7 +196,7 @@ void render() {
  */
 void resize(int width, int height) {
   screen_width = width;
-  screen_height=height;
+  screen_height = height;
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glViewport(0,0,screen_width,screen_height); 
   glutPostRedisplay(); 
