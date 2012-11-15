@@ -18,5 +18,5 @@ class Player: public Entity {
 	private:
 		double max_velocity;
 		double max_rotation;
-		double size;
+		double scale;
 };

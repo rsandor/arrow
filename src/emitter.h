@@ -63,6 +63,7 @@ public:
   void setLifespan(int);
   void setMaxParticles(int);
 	void setDelay(int);
+  void setBurst(int);
 
 	void on();
 	void off();
@@ -86,6 +87,7 @@ private:
 
 	int delay; 					// Delay steps between emissions
 	int timer; 					// Current delay timer value
+  int burst;          // Number of particles to release in a burst
 
   double rotation;		// Rotation in degrees
 	double spread;			// Spread in degrees

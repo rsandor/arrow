@@ -49,6 +49,7 @@ Emitter::Emitter() {
   max_particles = 100;
   lifespan = 1000;
 	emitting = false;
+  burst = 1;
 }
 
 void Emitter::setPosition(double newX, double newY) {
@@ -81,6 +82,10 @@ void Emitter::setDelay(int newDelay) {
 	timer = delay;
 }
 
+void Emitter::setBurst(int b) {
+  burst = b;
+}
+
 void Emitter::on() {
 	emitting = true;
 	//timer = delay;
@@ -91,17 +96,13 @@ void Emitter::off() {
 }
 
 void Emitter::emit() {
-	Particle *p = new Particle(lifespan);
-	
-	double rad = deg2rad(rotation + (uniform() * spread) - (spread / 2));
-	double px = cos(rad);
-	double py = sin(rad);
-	
+  double rad = deg2rad(normDeg(uniform() * spread + rotation - spread/2));
+  double px = cos(rad);
+  double py = sin(rad);
+  Particle *p = new Particle(lifespan);
 	p->setPosition( px + x, py + y );
 	p->setVelocity( velocity * px, velocity * py );
-	
 	particles.push_back(p);
-	
 }
 
 void Emitter::update() {
@@ -109,7 +110,8 @@ void Emitter::update() {
 	if (emitting) {
 		timer--;
 		if (!timer) {
-			emit();
+      for (int j = 0; j < burst; j++)
+			  emit();
 			timer = delay;
 		}
 	}

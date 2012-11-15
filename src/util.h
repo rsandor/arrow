@@ -17,6 +17,10 @@
 // Convert degrees to radians
 #define deg2rad(D) 	((M_PI * D) / 180.0 + M_PI_2);
 
+#define normDeg(D)  ((D) >= 360.0 ? (D) - 360.0 : ((D) < 0 ? (D) + 360.0 : (D)))
+
+
+
 // Screen width and height
 extern int screen_width;
 extern int screen_height;

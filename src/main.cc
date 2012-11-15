@@ -177,7 +177,12 @@ void render() {
   renderGrid();
   renderDevHUD();
   
-  player->render();
+  glPushMatrix();
+  glLoadIdentity();
+  glTranslatef(screen_width/2, screen_height/2, 0.0);
+    player->render();
+  glPopMatrix();
+  
 	emitter->render();
   FX->render();
   
@@ -252,11 +257,13 @@ int main(int argc, char **argv) {
   
 	// Initialize the game state
 	// TODO Pull this out into some form of game model
-	emitter->setSpread(20);
-	emitter->setVelocity(5);
-	emitter->setLifespan(150);
-	emitter->setDelay(1);
+	emitter->setSpread(30);
+	emitter->setVelocity(6);
+	emitter->setLifespan(100);
+	emitter->setDelay(5);
+  emitter->setBurst(10);
 	
+	//*
 	for (int i = 0; i < 5; i++) {
     double sx = screen_width * uniform();
     double sy = screen_height * uniform();
@@ -264,6 +271,7 @@ int main(int argc, char **argv) {
 		s->setPosition(sx, sy);
 		squares.push_back(s);
 	}
+	//*/
 
   toggleAction(ACTION_SHOW_DEV_HUD);
 
